@@ -12,8 +12,18 @@ st.title("📊 Passenger Satisfaction Analysis")
 @st.cache_data
 def load_data():
     path = kagglehub.dataset_download("teejmahal20/airline-passenger-satisfaction")
-    data_file = os.path.join(path, "airline_passenger_satisfaction.csv")
-    return pd.read_csv(data_file)
+    if path:
+        files = os.listdir(path)
+        csv_file = [f for f in files if f.endswith(".csv")]
+        if csv_file:
+            data_file = os.path.join(path, csv_file[0])  # Assuming only one CSV file
+            return pd.read_csv(data_file)
+        else:
+            st.error("No CSV file found in the downloaded Kaggle dataset.")
+            return None
+    else:
+        st.error("Failed to download the Kaggle dataset.")
+        return None
 
 df = load_data()
 
